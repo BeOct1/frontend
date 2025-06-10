@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Register from './Register';
 import Login from './Login';
 import Profile from './Profile';
@@ -14,12 +14,26 @@ import AuthModal from './AuthModal';
 import './App.css';
 
 function App() {
+  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark');
+
   return (
-    <AuthProvider>
-      <MovieCacheProvider>
-        <MainApp />
-      </MovieCacheProvider>
-    </AuthProvider>
+    <>
+      <button className="theme-toggle-btn" onClick={toggleTheme} aria-label="Toggle dark/light mode">
+        {theme === 'dark' ? '🌞' : '🌙'}
+      </button>
+      <AuthProvider>
+        <MovieCacheProvider>
+          <MainApp />
+        </MovieCacheProvider>
+      </AuthProvider>
+    </>
   );
 }
 
@@ -81,7 +95,6 @@ function MainApp() {
               <span>Videos</span>
               <span>Similar Movies</span>
             </nav>
-            <span className="modern-hero-login" onClick={() => { setAuthMode('login'); setShowAuthModal(true); }}>Login / Sign in</span>
           </div>
           <div className="modern-hero-main">
             <h1 className="modern-hero-title">Dune</h1>
