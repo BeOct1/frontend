@@ -37,10 +37,8 @@ describe('FavoritesList component', () => {
 
     expect(screen.getByText(/loading favorites/i)).toBeInTheDocument();
 
-    await waitFor(() => {
-      expect(screen.getByText('Favorite Movie 1')).toBeInTheDocument();
-      expect(screen.getByText('Favorite Movie 2')).toBeInTheDocument();
-    });
+    expect(await screen.findByText('Favorite Movie 1')).toBeInTheDocument();
+    expect(await screen.findByText('Favorite Movie 2')).toBeInTheDocument();
   });
 
   test('removes a favorite', async () => {
@@ -62,8 +60,8 @@ describe('FavoritesList component', () => {
 
     fireEvent.click(screen.getByText(/remove/i));
 
+    expect(mockNotify).toHaveBeenCalledWith('Favorite removed', 'success');
     await waitFor(() => {
-      expect(mockNotify).toHaveBeenCalledWith('Favorite removed', 'success');
       expect(screen.queryByText('Favorite Movie 1')).not.toBeInTheDocument();
     });
   });
@@ -75,8 +73,6 @@ describe('FavoritesList component', () => {
 
     renderWithContext(<FavoritesList />, { token: 'test-token' });
 
-    await waitFor(() => {
-      expect(mockNotify).toHaveBeenCalledWith('Failed to fetch favorites', 'error');
-    });
+    expect(mockNotify).toHaveBeenCalledWith('Failed to fetch favorites', 'error');
   });
 });
